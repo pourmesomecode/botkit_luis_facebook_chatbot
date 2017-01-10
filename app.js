@@ -18,6 +18,24 @@ var os = require('os');
 var commandLineArgs = require('command-line-args');
 var localtunnel = require('localtunnel');
 var xhub = require('express-x-hub');
+var graph = require('fbgraph');
+var request = require('request');
+
+// var wit = require('botkit-witai')({
+//     accessToken: "QRPJOQJLDOBNEJB42NMQKRBDYMETOMOD",
+//     minConfidence: 0.6,
+//     logLevel: 'debug'
+// });
+
+// Eventbrite
+var website = 'https://www.eventbrite.com/';
+var filter = 'd/united-kingdom--manchester/events/';
+var token = 'oauth/authorize?response_type=code&client_id=************';
+
+var token = 'ELBZ57BH2LXYRJ7CFDKJ';
+
+
+graph.setAccessToken("EAAUW2AqZADy8BAGZCrZBc9nThUMUyooDp7s4EZACoXIggIAQ6UPkhWQUvrT8tlprVYneF5bOyKOZA5Xn1EG3plnVPBFXTRvCoZArdvcHIRrFU4QtO7ePwdgUskK35vsNK321cBpwh1tmtYEcvrs4iZCTUE4za1hZBGaDvyGSJh5PEQZDZD");
 
 const ops = commandLineArgs([
       {name: 'lt', alias: 'l', args: 1, description: 'Use localtunnel.me to make your bot available on the web.',
@@ -41,6 +59,8 @@ var controller = Botkit.facebookbot({
     validate_requests: true, // Refuse any requests that don't come from FB on your receive webhook, must provide FB_APP_SECRET in environment variables
 });
 
+// controller.middleware.receive.use(wit.receive);
+
 var bot = controller.spawn({
 });
 
@@ -60,11 +80,15 @@ controller.setupWebserver(process.env.port || 3000, function(err, webserver) {
                 console.log("Your bot is no longer available on the web at the localtunnnel.me URL.");
                 process.exit();
             });
+
+        //   graph.get("724498087698642?fields=id,location,age_range,gender,locale,name", function(err, res) {
+        //     console.log(res);
+        //   });
         }
     });
 });
 
-controller.api.thread_settings.greeting('Hello! I\'m a Botkit bot!');
+controller.api.thread_settings.greeting('Hello! I\'m a bot! Created by the most powerful superhuman alive, Charles Browne!');
 controller.api.thread_settings.get_started('sample_get_started_payload');
 controller.api.thread_settings.menu([
     {
@@ -79,10 +103,24 @@ controller.api.thread_settings.menu([
     },
     {
       "type":"web_url",
-      "title":"Botkit Docs",
-      "url":"https://github.com/howdyai/botkit/blob/master/readme-facebook.md"
+      "title":"My Twitter",
+      "url":"https://twitter.com/PourMeSomeCode"
     },
 ]);
+
+// controller.hears(['How\'s the weather in Manchester?'], 'message_received', wit.hears, function (bot, message) {
+//       console.log("Wit.ai detected entities", message.entities);
+//       //Example message: "I want a spa treatment"
+//       //    {
+//       //      "spa": [
+//       //        {
+//       //          "confidence": 1,
+//       //          "type": "value",
+//       //          "value": "spa"
+//       //        }
+//       //      ]
+//       //    }
+// });
 
 controller.hears(['quick'], 'message_received', function(bot, message) {
 
@@ -102,6 +140,11 @@ controller.hears(['quick'], 'message_received', function(bot, message) {
         ]
     });
 
+});
+
+controller.on('message_received', function(bot, message) {
+    // console.log(bot, "<<<<<");
+    // console.log(message, "<<<<<<");
 });
 
 controller.hears(['^hello', '^hi'], 'message_received,facebook_postback', function(bot, message) {
@@ -196,7 +239,6 @@ controller.hears(['structured'], 'message_received', function(bot, message) {
 controller.on('facebook_postback', function(bot, message) {
     // console.log(bot, message);
    bot.reply(message, 'Great Choice!!!! (' + message.payload + ')');
-
 });
 
 
@@ -226,7 +268,7 @@ controller.hears(['what is my name', 'who am i'], 'message_received', function(b
                     convo.ask('What should I call you?', function(response, convo) {
                         convo.ask('You want me to call you `' + response.text + '`?', [
                             {
-                                pattern: 'yes',
+                                pattern: bot.utterances.yes,
                                 callback: function(response, convo) {
                                     // since no further messages are queued after this,
                                     // the conversation will end naturally with status == 'completed'
