@@ -13,6 +13,7 @@
   "author": "charles browne <charlesanthonyproctorbrowne@gmail.com> (http://charlesbrowne.io)",
   "license": "ISC",
   "dependencies": {
-    "botkit": "^0.4.9"
+    "botkit": "^0.4.9",
+    "os": "^0.1.1"
   }
 }
