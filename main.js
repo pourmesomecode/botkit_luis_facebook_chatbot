@@ -17,26 +17,15 @@ if (!process.env.app_secret) {
 }
 
 
-const credentials = {
-    client: {
-        id: process.env.client_id,
-        secret: process.env.client_secret
-    },
-    auth: {
-        tokenHost: 'https://api.oauth.com'
-    }
-};
+const dotenv          = require('dotenv').config()
 
 
 const botkit          = require("botkit")
 const os              = require("os")
-const commandLineArgs = require("command-line-args")
 const bodyParser      = require('body-parser')
 const crypto          = require('crypto')
-const express         = require('express')
 const fetch           = require('node-fetch')
 const request         = require('request')
-const oauth2          = require('simple-oauth2').create(credentials);
 
 
 const controller = botkit.facebookbot({
@@ -86,7 +75,7 @@ controller.api.thread_settings.menu([
 ])
 
 
-controller.hears(['hello'], 'message_received', function(bot, message) {
+controller.hears(['^hello'], 'message_received', function(bot, message) {
     bot.reply(message, 'Hey there.');
 })
 
