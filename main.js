@@ -39,14 +39,6 @@ const request         = require('request')
 const oauth2          = require('simple-oauth2').create(credentials);
 
 
-client_id = process.env.client_id;
-client_secret = process.env.client_secret;
-redirect_uri = process.env.redirect_uri;
-
-
-client = OAuth2::Client.new(client_id, client_secret, site: 'https://api.resourceguruapp.com')
-
-
 const controller = botkit.facebookbot({
     debug: true,
     log: true,
