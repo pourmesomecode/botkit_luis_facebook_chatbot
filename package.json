@@ -13,7 +13,15 @@
   "author": "charles browne <charlesanthonyproctorbrowne@gmail.com> (http://charlesbrowne.io)",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.16.0",
     "botkit": "^0.4.9",
-    "os": "^0.1.1"
+    "botkit-middleware-witai": "0.0.2",
+    "express": "^4.14.0",
+    "localtunnel": "^1.8.2",
+    "node-wit": "^4.2.0",
+    "oauth2": "0.0.1",
+    "os": "^0.1.1",
+    "request": "^2.79.0",
+    "simple-oauth2": "^1.0.3"
   }
 }
