@@ -15,10 +15,10 @@ if (!process.env.app_secret) {
     console.log('Error: Specify app_secret in environment');
     process.exit(1);
 }
-
-
-const dotenv          = require('dotenv').config()
-
+if (!process.env.serviceUri) {
+    console.log('Error: Specify wit in environment');
+    process.exit(1);
+}
 
 const botkit          = require("botkit")
 const os              = require("os")
@@ -26,6 +26,18 @@ const bodyParser      = require('body-parser')
 const crypto          = require('crypto')
 const fetch           = require('node-fetch')
 const request         = require('request')
+const rp              = require('request-promise')
+const graph           = require('fbgraph')
+const Bluebird        = require("bluebird")
+
+const dotenv          = require('dotenv').config()
+const luis            = require('botkit-middleware-luis');
+
+
+let luisOptions = {serviceUri: process.env.serviceUri};
+
+
+graph.setAccessToken(process.env.fb_access_token);
 
 
 const controller = botkit.facebookbot({
@@ -42,19 +54,16 @@ const controller = botkit.facebookbot({
 const bot = controller.spawn({})
 
 
-controller.on('tick', function(bot, event) {
-  // Do nothing - here to prevent constant log on 'no tick handler' message in console
-})
+controller.middleware.receive.use(luis.middleware.receive(luisOptions));
 
 
-controller.setupWebserver(process.env.port || 3000, function(err, webserver) {
-    controller.createWebhookEndpoints(webserver, bot, function(){
-        console.log("Online!")
-    })
-})
+controller.on('tick', function(bot, event) {})
 
 
-controller.api.thread_settings.greeting("Hello! Ask me about your favourite football team!")
+controller.setupWebserver(process.env.port || 3000,function(err,webserver){controller.createWebhookEndpoints(webserver,bot,function(){})})
+
+
+controller.api.thread_settings.greeting("Lets book a holiday together?!")
 controller.api.thread_settings.get_started("sample_get_started_payload")
 controller.api.thread_settings.menu([
     {
@@ -70,17 +79,24 @@ controller.api.thread_settings.menu([
     {
         "type" : "web_url",
         "title" : "Website",
-        "url" : "http://www.bbc.co.uk/sport"
+        "url" : "http://thisismn.com"
     },
 ])
 
 
-controller.hears(['^hello'], 'message_received', function(bot, message) {
-    bot.reply(message, 'Hey there.');
+controller.hears(['hello'], 'message_received', luis.middleware.hereIntent, function(bot, message) {
+    bot.reply(message, "Hello there!!");
 })
 
 
-controller.hears(['cookies'], 'message_received', function(bot, message) {
+controller.hears(['^holidays'], 'message_received', luis.middleware.hereIntent, function(bot, message) {
+
+    bot.reply(message, "Holidays left");
+
+})
+
+
+controller.hears(['cookies'], 'message_received', luis.middleware.hereIntent, function(bot, message) {
     bot.startConversation(message, function(err, convo) {
         convo.say('Did someone say cookies!?!!');
         convo.ask('What is your favorite type of cookie?', function(response, convo) {
@@ -91,7 +107,7 @@ controller.hears(['cookies'], 'message_received', function(bot, message) {
 })
 
 
-controller.on('message_received', function(bot, message) {
-    bot.reply(message, 'I\'m a bot. Try talking to me like one. I have no idea what you just said!');
-    return false;
-})
+// controller.on('message_received', function(bot, message) {
+//     bot.reply(message, 'I\'m a bot. Try talking to me like one. I have no idea what you just said!');
+//     return false;
+// })
