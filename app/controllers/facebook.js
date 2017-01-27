@@ -38,3 +38,4 @@ controller.setupWebserver(process.env.port || 3000,function(err,webserver){contr
 
 
 require('../handlers/conversations')(controller)
+require('../handlers/facebook/conversations')(controller)

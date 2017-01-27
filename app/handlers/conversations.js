@@ -23,14 +23,13 @@ module.exports = function (controller) {
 
 
     controller.hears(['greetings'],'message_received,direct_message,direct_mention,mention', wit.hears,function(bot, message) {
-        bot.reply(message, 'Hey there.')
+        bot.reply(message, 'Hello good sir!!')
     })
 
 
-    controller.on('message_received', function(bot, message) {
-        // bot.reply(message, 'Try: `what is my name` or `structured` or `call me captain`');
-        console.log(message);
-    });
-
+    // controller.on('message_received,direct_message,direct_mention,mention', function(bot, message) {
+    //     bot.reply(message, "https://giphy.com/gifs/supernatural-jensen-ackles-funny-face-aHlnxCpJUIDM4");
+    //     return false;
+    // });
 
 }
